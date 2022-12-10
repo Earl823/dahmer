@@ -37,5 +37,5 @@ level = [
 "W                              W                 W", 
 "W                              W                 W",
 "W                              W                 W",                                               
-"WWWWWWWWWWWWWWWWWWWWWWWWEWWWWWWWWWWWWWWWWWWWWWWWWW",
+"WWWWWWWWWWWWWWWWWWWWWWWWEEEWWWWWWWWWWWWWWWWWWWWWWW",
 ]

@@ -10,7 +10,8 @@ class Player(object):
     def __init__(self):
         # self.img = pygame.image.load('pic/red-ball.png')
         # self.rect = rect
-        self.rect = pygame.Rect(100, 100, 100, 100)
+        self.rect = pygame.Rect(27, 27, 27, 64)
+        # self.rect = pygame.Rect(27, 27, 27, 27)
 
     def move(self, dx, dy):
         
@@ -52,6 +53,41 @@ def collide(p1, p2):
 def bg():
     man = screen.blit(character.bg2, (0,0))
 
+right = False
+left = False
+walk_count = 0
+
+def draw_game1():
+    global walk_count
+    # p1 = screen.blit(character.char, player.rect) #player 1
+    p1 = screen.blit(character.char, player.rect) #player2
+
+    if walk_count >= 36:
+        walk_count = 0
+    if left:
+        screen.blit(character.char2[walk_count//4], player.rect)
+        walk_count += 1
+    pygame.time.delay(10)
+
+def draw_game2():
+    global walk_count
+    # p1 = screen.blit(character.char, player.rect) #player 1
+    p2 = screen.blit(character.char, player2.rect) #player2
+
+    if walk_count >= 36:
+        walk_count = 0
+    if left:
+        screen.blit(character.char3[walk_count//4], player2.rect)
+        walk_count += 1
+    pygame.time.delay(10)
+
+    
+
+
+    # elif right:
+    #     screen.blit(character.char2[walk_count // 4], player2.rect)
+    #     walk_count += 1
+
 
 # class to hold a wall rect
 class Wall(object):
@@ -77,6 +113,7 @@ player2 = Player()
 
 # Parse the level string above. W = wall, E = exit
 x = y = 0
+
 for row in wall.level:
     for col in row:
         if col == "W":
@@ -104,22 +141,34 @@ while running:
     # player 1
     if key[pygame.K_a]:
         player.move(-2, 0)
-    if key[pygame.K_d]:
+        left = True
+        right = False
+    elif key[pygame.K_d]:
         player.move(2, 0)
-    if key[pygame.K_w]:
+    elif key[pygame.K_w]:
         player.move(0, -2)
-    if key[pygame.K_s]:
+    elif key[pygame.K_s]:
         player.move(0, 2)
 
     #player 2
-    if key[pygame.K_LEFT]:
+    elif key[pygame.K_LEFT]:
         player2.move(-2, 0)
-    if key[pygame.K_RIGHT]:
+        left = True
+        right = False
+
+    elif key[pygame.K_RIGHT]:
         player2.move(2, 0)
-    if key[pygame.K_UP]:
+        
+
+    elif key[pygame.K_UP]:
         player2.move(0, -2)
-    if key[pygame.K_DOWN]:
+    elif key[pygame.K_DOWN]:
         player2.move(0, 2)
+    else:
+        left = False
+        right = False
+        walk_count = 0
+
 
     player_1 = 0 
     player_2 = 0
@@ -145,9 +194,12 @@ while running:
     #player color
     # player.player()
     # player2.player()
-    screen.blit(character.char, player.rect) #player 1
-    screen.blit(character.char2, player2.rect) #player 2
+    # screen.blit(character.char, player.rect) #player 1
+    # screen.blit(character.char2, player2.rect) #player 2
+    draw_game1()
+    draw_game2()
     pygame.display.flip()
+    # pygame.time.delay(10)
     pygame.display.update()
     
 pygame.quit()
