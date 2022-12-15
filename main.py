@@ -4,13 +4,13 @@ import random
 import pygame
 import character, wall
 
-# Class for the orange dude
+# Class for the player
 class Player(object):
     
     def __init__(self):
         # self.img = pygame.image.load('pic/red-ball.png')
         # self.rect = rect
-        self.rect = pygame.Rect(27, 27, 27, 64)
+        self.rect = pygame.Rect(35, 34, 35, 64)
         # self.rect = pygame.Rect(27, 27, 27, 27)
 
     def move(self, dx, dy):
@@ -55,38 +55,62 @@ def bg():
 
 right = False
 left = False
+front = False
+back = False
 walk_count = 0
+
+right1 = False
+left1 = False
+down1 = False
+walk_count1 = 0
+
+player1 = True
+player2 = True
 
 def draw_game1():
     global walk_count
     # p1 = screen.blit(character.char, player.rect) #player 1
-    p1 = screen.blit(character.char, player.rect) #player2
+    # p1 = screen.blit(character.char, player.rect) #player2
 
     if walk_count >= 36:
         walk_count = 0
     if left:
-        screen.blit(character.char2[walk_count//4], player.rect)
+        screen.blit(character.left[walk_count//4], player.rect)
         walk_count += 1
-    pygame.time.delay(10)
+    elif right:
+        screen.blit(character.right[walk_count//4], player.rect)
+        walk_count += 1
+    elif front:
+        screen.blit(character.front[walk_count//4], player.rect)
+        walk_count += 1
+    elif back:
+        screen.blit(character.back[walk_count//4], player.rect)
+        walk_count += 1
+    else:
+        screen.blit(character.char, player.rect) 
+
+    pygame.time.delay(30)
 
 def draw_game2():
-    global walk_count
+    global walk_count1
     # p1 = screen.blit(character.char, player.rect) #player 1
-    p2 = screen.blit(character.char, player2.rect) #player2
+    # p2 = screen.blit(character.char1, player2.rect) #player2
 
-    if walk_count >= 36:
-        walk_count = 0
-    if left:
-        screen.blit(character.char3[walk_count//4], player2.rect)
-        walk_count += 1
-    pygame.time.delay(10)
+    if walk_count1 >= 36:
+        walk_count1 = 0
+    if left1:
+        screen.blit(character.left[walk_count1//4], player2.rect)
+        walk_count1 += 1
+    elif right1:
+        screen.blit(character.left[walk_count1//4], player2.rect)
+        walk_count1 += 1
+    elif down1:
+        screen.blit(character.left[walk_count1//4], player2.rect)
+        walk_count1 += 1
+    else:
+        screen.blit(character.char1, player2.rect) 
 
-    
-
-
-    # elif right:
-    #     screen.blit(character.char2[walk_count // 4], player2.rect)
-    #     walk_count += 1
+    pygame.time.delay(30)
 
 
 # class to hold a wall rect
@@ -136,38 +160,72 @@ while running:
             running = False
     
     # Move the player if an arrow key is pressed
-    key = pygame.key.get_pressed()
+    # p1()
+    # p2()
 
     # player 1
-    if key[pygame.K_a]:
-        player.move(-2, 0)
-        left = True
-        right = False
-    elif key[pygame.K_d]:
-        player.move(2, 0)
-    elif key[pygame.K_w]:
-        player.move(0, -2)
-    elif key[pygame.K_s]:
-        player.move(0, 2)
+    if player1:
+        key = pygame.key.get_pressed()
 
-    #player 2
-    elif key[pygame.K_LEFT]:
-        player2.move(-2, 0)
-        left = True
-        right = False
+        if key[pygame.K_a]:
+            player.move(-2, 0)
+            left = True
+            right = False
+            front = False
+            back = False
+        elif key[pygame.K_d]:
+            player.move(2, 0)
+            left = False
+            right = True
+            front = False
+            back = False
+        elif key[pygame.K_w]:
+            player.move(0, -2)
+            left = False
+            right = False
+            front = False
+            back = True
+        elif key[pygame.K_s]:
+            player.move(0, 2)
+            left = False
+            right = False
+            front = True
+            back = False
+        else:
+            left = False
+            right = False
+            walk_count = 0
 
-    elif key[pygame.K_RIGHT]:
-        player2.move(2, 0)
-        
+    # player 2
+    if player2:
+        key1 = pygame.key.get_pressed()
+    
+        if key1[pygame.K_LEFT]:
+            player2.move(-2, 0)
+            left1 = True
+            right1 = False
+            down1 = False
 
-    elif key[pygame.K_UP]:
-        player2.move(0, -2)
-    elif key[pygame.K_DOWN]:
-        player2.move(0, 2)
-    else:
-        left = False
-        right = False
-        walk_count = 0
+        elif key1[pygame.K_RIGHT]:
+            player2.move(2, 0)
+            left1 = False
+            right1 = True
+            down1 = False
+
+        elif key1[pygame.K_UP]:
+            player2.move(0, -2)
+
+        elif key1[pygame.K_DOWN]:
+            player2.move(0, 2)
+            left1 = False
+            right1 = False
+            down1 = True
+
+        else:
+            left1 = False
+            right1 = False
+            down1 = False
+            walk_count1 = 0
 
 
     player_1 = 0 
@@ -195,7 +253,7 @@ while running:
     # player.player()
     # player2.player()
     # screen.blit(character.char, player.rect) #player 1
-    # screen.blit(character.char2, player2.rect) #player 2
+    # screen.blit(character.char, player2.rect) #player 2
     draw_game1()
     draw_game2()
     pygame.display.flip()
