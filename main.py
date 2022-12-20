@@ -1,16 +1,24 @@
-
 import os
 import random
+import time
 import pygame
 import character, wall
 
 # Class for the player
-class Player(object):
+class Player(pygame.sprite.Sprite):
     
-    def __init__(self):
+    def __init__(self, x):
+        super(Player, self).__init__()
+        self.width = 35
+        self.height = 64
+        self.x = x
+        self.surf = pygame.Surface((100, 100))
+        self.b = pygame.draw.rect(screen, (255, 255, 255), [200, 400, 15, 15])
+        # self.surf.fill((255, 255, 255))
+        self.rect1 = self.surf.get_rect()
         # self.img = pygame.image.load('pic/red-ball.png')
         # self.rect = rect
-        self.rect = pygame.Rect(35, 34, 35, 64)
+        self.rect = pygame.Rect(x, 35, self.width , self.height)
         # self.rect = pygame.Rect(27, 27, 27, 27)
 
     def move(self, dx, dy):
@@ -26,10 +34,6 @@ class Player(object):
         # Move the rect
         self.rect.x += dx
         self.rect.y += dy
-
-    # def player(self):
-    #     p1 = screen.blit(character.rect, (16, 16))
-    #     p2 = screen.blit(character.rect1, (16, 16))
 
         # If you collide with a wall, move out based on velocity
         for wall in walls:
@@ -49,6 +53,7 @@ def collide(p1, p2):
     if p2.rect.colliderect(end_rect):
         print("player 2 win")
         # sys.exit()
+    
 
 def bg():
     man = screen.blit(character.bg2, (0,0))
@@ -69,8 +74,6 @@ player2 = True
 
 def draw_game1():
     global walk_count
-    # p1 = screen.blit(character.char, player.rect) #player 1
-    # p1 = screen.blit(character.char, player.rect) #player2
 
     if walk_count >= 36:
         walk_count = 0
@@ -93,8 +96,6 @@ def draw_game1():
 
 def draw_game2():
     global walk_count1
-    # p1 = screen.blit(character.char, player.rect) #player 1
-    # p2 = screen.blit(character.char1, player2.rect) #player2
 
     if walk_count1 >= 36:
         walk_count1 = 0
@@ -110,8 +111,37 @@ def draw_game2():
     else:
         screen.blit(character.char1, player2.rect) 
 
-    pygame.time.delay(30)
 
+speed_boost_available = True
+speedx = 2
+speedy = -2
+location_x = random.randint(200, 400)
+location_y = random.randint(200, 400)
+def speed_boost():
+    global speed_boost_available
+    global walk_count
+    global location_x
+    global location_y
+
+    if walk_count == 30 and not speed_boost_available:
+        speed_boost_available = True
+        location_x = random.randint(25, 750)
+        location_y = random.randint(25, 550)
+
+speed_boost_available1 = True
+location_x1 = random.randint(200, 500)
+location_y1 = random.randint(200, 500)
+def speed_boost1():
+    global speed_boost_available1
+    global walk_count
+    global location_x1
+    global location_y
+
+    if walk_count == 30 and not speed_boost_available1:
+        speed_boost_available1 = True
+        location_x1 = random.randint(25, 600)
+        location_y1 = random.randint(25, 500)
+    
 
 # class to hold a wall rect
 class Wall(object):
@@ -120,8 +150,6 @@ class Wall(object):
         walls.append(self)
         self.rect = pygame.Rect(pos[0], pos[1], 16, 16)
 
-# Initialise pygame
-# os.environ["SDL_VIDEO_CENTERED"] = "1"
 pygame.init()
 
 width, height = 800, 590
@@ -132,11 +160,14 @@ clock = pygame.time.Clock()
 walls = [] # List to hold the walls
 
 # Create the player
-player = Player()
-player2 = Player() 
+player = Player(50)
+player2 = Player(700)
 
+
+power = screen.blit(character.ball, (500, 35))
 # Parse the level string above. W = wall, E = exit
 x = y = 0
+
 
 for row in wall.level:
     for col in row:
@@ -164,33 +195,38 @@ while running:
     # p2()
 
     # player 1
-    if player1:
+    if player:
         key = pygame.key.get_pressed()
 
         if key[pygame.K_a]:
-            player.move(-2, 0)
+            player.move(speedy, 0)
             left = True
             right = False
             front = False
             back = False
+
         elif key[pygame.K_d]:
-            player.move(2, 0)
+            
+            player.move(speedx, 0)
             left = False
             right = True
             front = False
             back = False
+               
         elif key[pygame.K_w]:
-            player.move(0, -2)
+            player.move(0, speedy)
             left = False
             right = False
             front = False
             back = True
+
         elif key[pygame.K_s]:
-            player.move(0, 2)
+            player.move(0, speedx)
             left = False
             right = False
             front = True
             back = False
+
         else:
             left = False
             right = False
@@ -227,22 +263,10 @@ while running:
             down1 = False
             walk_count1 = 0
 
-
-    player_1 = 0 
-    player_2 = 0
-    # bg(character.bg2)
+ 
     collide(player, player2)
     
-    # Just added this to make it slightly fun ;)
-    # if player2.rect.colliderect(end_rect):
-    #     print("player 2 win")
-    # if player.rect.colliderect(player2):
-    #     # print("player 1 win")
-    #     player_1 += 1
-    # print(player_1)
-    
     # Draw the scene
-
     screen.fill((0, 0, 0))
     bg()
     for wall in walls:
@@ -256,8 +280,37 @@ while running:
     # screen.blit(character.char, player2.rect) #player 2
     draw_game1()
     draw_game2()
+    speed_boost()
+    speed_boost1()
+   
+    if speed_boost_available:
+        boost = pygame.draw.rect(screen, (249, 10, 10), [location_x, location_y, 15, 15])
+      
+        if player.rect.colliderect(boost):
+            speed_boost_available = False
+            speedx = 10 
+            speedy = -10
+
+        elif player2.rect.colliderect(boost):
+            speed_boost_available = False
+            speedx = 10 
+            speedy = -10
+
+    if speed_boost_available1:
+        boost1 = pygame.draw.rect(screen, (233, 249, 10), [location_x1, location_y1, 15, 15])
+    
+        if player.rect.colliderect(boost1):
+            speed_boost_available1 = False
+            speedx = 2
+            speedy = -2
+
+        elif player2.rect.colliderect(boost1):
+            speed_boost_available1 = False
+            speedx = 2
+            speedy = -2
+
+
     pygame.display.flip()
-    # pygame.time.delay(10)
     pygame.display.update()
     
 pygame.quit()
