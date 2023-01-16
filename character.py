@@ -7,9 +7,9 @@ bg2 = pygame.image.load('pic/tiles2.0.png')
 bg2 = pygame.transform.scale(bg2, (800, 600))
 char = pygame.image.load(os.path.join('pic/move-char', 'front2.0.png'))
 oponent = pygame.image.load(os.path.join('pic/move-char', 'oponent-front.png'))
-char1 = pygame.image.load(os.path.join('pic/move-char', '51-27.png'))
-ball = pygame.image.load(os.path.join('pic/', 'blue-ball.png'))
-blue_man = pygame.image.load(os.path.join('pic/', 'blue-man.png'))
+orange_button = pygame.image.load(os.path.join('pic/', 'play-game.png'))
+player1_wins = pygame.image.load(os.path.join('pic/', 'player1_wins.png'))
+player2_wins = pygame.image.load(os.path.join('pic/', 'player2_wins.png'))
 
 left = [
 		pygame.image.load(os.path.join('pic/move-char', 'side-right2.0.png')), 

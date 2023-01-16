@@ -50,6 +50,25 @@ class Wall(object):
         self.rect = pygame.Rect(pos[0], pos[1], 16, 16)
 
 
+start = True
+def play():
+    global start
+    while start:
+        screen.fill((64, 64, 64))
+        screen.blit(character.orange_button, (160, 150))
+        play = font.render('Press Enter to play', True, (255, 0, 0))
+        screen.blit(play, (300, 350))
+        for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        start = False
+        pygame.display.update()           
+        
+
+
 font = pygame.font.Font('freesansbold.ttf', 20)
 player1_score = 0
 player2_score = 0
@@ -59,8 +78,10 @@ def collide(p1, p2):
     global player2_score
     global player
     global player2
-    global speedx
-    global speedy
+    global player1_speedx
+    global palyer1_speedy
+    global player2_speedx
+    global player2_speedy
     
     player1_display_score = font.render('Player 1 Score: '+ str(player1_score), True, (255, 128, 0))
     screen.blit(player1_display_score, (25, 20))
@@ -73,35 +94,36 @@ def collide(p1, p2):
         player2 = Player(715)
 
         player1_score += 1
-        speedx = 2
-        speedy = -2
-        # raise SystemExit
+        player1_speedx = 2
+        player1_speedy = -2
+        player2_speedx = 2
+        player2_speedy = -2
        
-    elif p2.rect.colliderect(end_rect):
+    elif p2.rect.colliderect(door):
         player2 = Player(715)
         player = Player(50)
 
         player2_score += 1
-        # sys.exit()
+        player2_speedx = 2
+        player2_speedy = -2
 
     else:
         if player1_score == 3:
-            game_over()
-            # print('player 1 win')
-            # sys.exit()
+            player1_win()
             
-        elif player2_score == 3:
-            print('player 2 win')
-            raise SystemExit
-            
+        if player2_score == 3:
+            player2_win()            
 
+win1 = False
+def player1_win():
+    global win1
+    p1 = screen.blit(character.player1_wins, (140, 200))
+    win1 = True
 
-win = False
-def game_over():
-    global win
-    player1_win = font.render('Player 1 Win', True, (20, 35, 239))
-    g1 = screen.blit(player1_win, (200, 50))
-    win = True
+def player2_win():
+    global win1
+    p2 = screen.blit(character.player2_wins, (140, 200))
+    win1 = True
     
 right = False
 left = False
@@ -164,8 +186,10 @@ def draw_game2():
 
 
 speed_boost_available = True
-speedx = 2
-speedy = -2
+player1_speedx = 2
+player1_speedy = -2
+player2_speedx = 2
+player2_speedy = -2
 location_x = random.randint(200, 400)
 location_y = random.randint(200, 400)
 def speed_boost():
@@ -207,8 +231,6 @@ walls = [] # List to hold the walls
 player = Player(50)
 player2 = Player(715)
 
-
-power = screen.blit(character.ball, (500, 35))
 # Parse the level string above. W = wall, E = exit
 x = y = 0
 
@@ -239,7 +261,7 @@ while running:
         key = pygame.key.get_pressed()
 
         if key[pygame.K_a]:
-            player.move(speedy, 0)
+            player.move(player1_speedy, 0)
             left = True
             right = False
             front = False
@@ -247,32 +269,34 @@ while running:
 
         elif key[pygame.K_d]:
             
-            player.move(speedx, 0)
+            player.move(player1_speedx, 0)
             left = False
             right = True
             front = False
-            back = False
+            back = False 
                
         elif key[pygame.K_w]:
-            player.move(0, speedy)
+            player.move(0, player1_speedy)
             left = False
             right = False
             front = False
             back = True
 
         elif key[pygame.K_s]:
-            player.move(0, speedx)
+            player.move(0, player1_speedx)
             left = False
             right = False
             front = True
             back = False
 
-        elif key[pygame.K_SPACE] and win:
+        elif key[pygame.K_SPACE] and win1:
             player = Player(50)
             player2 = Player(715)
             player1_score = 0
-            win = False
-
+            player2_score = 0
+           
+            win1 = False 
+            
         else:
             left = False
             right = False
@@ -284,28 +308,28 @@ while running:
         key1 = pygame.key.get_pressed()
     
         if key1[pygame.K_LEFT]:
-            player2.move(-2, 0)
+            player2.move(player2_speedy, 0)
             left1 = True
             right1 = False
             down1 = False
             back1 = False
 
         elif key1[pygame.K_RIGHT]:
-            player2.move(2, 0)
+            player2.move(player2_speedx, 0)
             left1 = False
             right1 = True
             down1 = False
             back1 = False
 
         elif key1[pygame.K_UP]:
-            player2.move(0, -2)
+            player2.move(0, player2_speedy)
             left1 = False
             right1 = False
             down1 = False
             back1 = True
 
         elif key1[pygame.K_DOWN]:
-            player2.move(0, 2)
+            player2.move(0, player2_speedx)
             left1 = False
             right1 = False
             down1 = True
@@ -325,8 +349,9 @@ while running:
     for wall in walls:
         pygame.draw.rect(screen, (32, 32, 32), wall.rect) # wall color black
 
-    pygame.draw.rect(screen, (102, 51, 0), end_rect) # box stay color brown
+    door = pygame.draw.rect(screen, (102, 51, 0), end_rect) # box stay color brown
 
+    play()
     draw_game1()
     draw_game2()
     speed_boost()
@@ -337,29 +362,30 @@ while running:
       
         if player.rect.colliderect(boost):
             speed_boost_available = False
-            speedx = 10 
-            speedy = -10
+            player1_speedx = 6 
+            player1_speedy = -6
 
-        # elif player2.rect.colliderect(boost):
-        #     speed_boost_available = False
-        #     speedx = 10 
-        #     speedy = -10
+        elif player2.rect.colliderect(boost):
+            speed_boost_available = False
+            player2_speedx = 6 
+            player2_speedy = -6
 
     if speed_boost_available1:
         boost1 = pygame.draw.rect(screen, (233, 249, 10), [location_x1, location_y1, 15, 15])
     
         if player.rect.colliderect(boost1):
             speed_boost_available1 = False
-            speedx = 2
-            speedy = -2
+            player1_speedx = 2
+            player1_speedy = -2
 
-        # elif player2.rect.colliderect(boost1):
-        #     speed_boost_available1 = False
-        #     speedx = 2
-        #     speedy = -2
+        elif player2.rect.colliderect(boost1):
+            speed_boost_available1 = False
+            player2_speedx = 2
+            player2_speedy = -2
 
     collide(player, player2)
     pygame.display.flip()
     pygame.display.update()
+    # print(len("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"))
     
 pygame.quit()
