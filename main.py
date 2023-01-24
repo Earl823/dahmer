@@ -1,5 +1,5 @@
 import pygame
-import os, sys, random, time
+import os, sys, random
 import character, wall
 
 
@@ -79,7 +79,7 @@ def collide(p1, p2):
     global player
     global player2
     global player1_speedx
-    global palyer1_speedy
+    global player1_speedy
     global player2_speedx
     global player2_speedy
     
@@ -94,18 +94,20 @@ def collide(p1, p2):
         player2 = Player(715)
 
         player1_score += 1
-        player1_speedx = 2
-        player1_speedy = -2
-        player2_speedx = 2
-        player2_speedy = -2
+        player1_speedx = 5
+        player1_speedy = -5
+        player2_speedx = 5
+        player2_speedy = -5
        
     elif p2.rect.colliderect(door):
         player2 = Player(715)
         player = Player(50)
 
         player2_score += 1
-        player2_speedx = 2
-        player2_speedy = -2
+        player1_speedx = 5
+        player1_speedy = -5
+        player2_speedx = 5
+        player2_speedy = -5
 
     else:
         if player1_score == 3:
@@ -186,10 +188,10 @@ def draw_game2():
 
 
 speed_boost_available = True
-player1_speedx = 2
-player1_speedy = -2
-player2_speedx = 2
-player2_speedy = -2
+player1_speedx = 5
+player1_speedy = -5
+player2_speedx = 5
+player2_speedy = -5
 location_x = random.randint(200, 400)
 location_y = random.randint(200, 400)
 def speed_boost():
@@ -358,20 +360,22 @@ while running:
     speed_boost1()
    
     if speed_boost_available:
-        boost = pygame.draw.rect(screen, (249, 10, 10), [location_x, location_y, 15, 15])
+        # boost = pygame.draw.rect(screen, (249, 10, 10), [, 15, 15])
+        boost = screen.blit(character.speed, (location_x, location_y))
       
         if player.rect.colliderect(boost):
             speed_boost_available = False
-            player1_speedx = 6 
-            player1_speedy = -6
+            player1_speedx = 8 
+            player1_speedy = -8
 
         elif player2.rect.colliderect(boost):
             speed_boost_available = False
-            player2_speedx = 6 
-            player2_speedy = -6
+            player2_speedx = 8 
+            player2_speedy = -8
 
     if speed_boost_available1:
-        boost1 = pygame.draw.rect(screen, (233, 249, 10), [location_x1, location_y1, 15, 15])
+        # boost1 = pygame.draw.rect(screen, (233, 249, 10), [location_x1, location_y1, 15, 15])
+        boost1 = screen.blit(character.debuff, (location_x1, location_y1))
     
         if player.rect.colliderect(boost1):
             speed_boost_available1 = False
@@ -386,6 +390,5 @@ while running:
     collide(player, player2)
     pygame.display.flip()
     pygame.display.update()
-    # print(len("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"))
     
 pygame.quit()

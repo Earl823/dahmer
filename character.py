@@ -4,6 +4,8 @@ import os
 pygame.init()
 
 bg2 = pygame.image.load('pic/tiles2.0.png')
+speed = pygame.image.load('pic/speed.png')
+debuff = pygame.image.load('pic/debuff.png')
 bg2 = pygame.transform.scale(bg2, (800, 600))
 char = pygame.image.load(os.path.join('pic/move-char', 'front2.0.png'))
 oponent = pygame.image.load(os.path.join('pic/move-char', 'oponent-front.png'))
